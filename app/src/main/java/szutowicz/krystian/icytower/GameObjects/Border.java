@@ -1,11 +1,11 @@
-package szutowicz.krystian.icytower;
+package szutowicz.krystian.icytower.GameObjects;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
-class Border extends GameObject {
+public class Border extends GameObject {
 
-    Border(Bitmap image, int x, int y){
+    public Border(Bitmap image, int x, int y){
         this.image=image;
         this.x=x;
         this.y=y;
@@ -13,11 +13,11 @@ class Border extends GameObject {
         height=image.getHeight();
     }
 
-    void update(int dy){
+    public void update(int dy){
         y=y+dy;
     }
 
-    void draw(Canvas canvas){
+    public void draw(Canvas canvas){
         canvas.drawBitmap(image, x, y, null);
     }
 }

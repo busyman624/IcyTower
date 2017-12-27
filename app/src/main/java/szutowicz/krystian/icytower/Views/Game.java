@@ -1,5 +1,6 @@
-package szutowicz.krystian.icytower;
+package szutowicz.krystian.icytower.Views;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,13 +13,24 @@ import android.hardware.SensorManager;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 
-class Game extends SurfaceView implements SurfaceHolder.Callback{
+import szutowicz.krystian.icytower.GameActivity;
+import szutowicz.krystian.icytower.GameObjects.Background;
+import szutowicz.krystian.icytower.GameObjects.Border;
+import szutowicz.krystian.icytower.GameObjects.Level;
+import szutowicz.krystian.icytower.GameObjects.Player;
+import szutowicz.krystian.icytower.GameThread;
+import szutowicz.krystian.icytower.R;
+
+public class Game extends SurfaceView implements SurfaceHolder.Callback{
 
     private int speed =3;
+    private RelativeLayout gameLayout;
+    private EndMenu endMenu;
     private GameThread gameThread;
     private Background background;
     private Player player;
@@ -32,16 +44,21 @@ class Game extends SurfaceView implements SurfaceHolder.Callback{
     private boolean win;
     private boolean restarted=true;
 
-    static Bitmap[] images;
+    public static Bitmap[] images;
 
-    Game (Context context){
+    public Game (Context context){
         super(context);
+        gameLayout=(RelativeLayout)((Activity)context).findViewById(R.id.gameLayout);
+        gameLayout.addView(this);
+        endMenu=new EndMenu(context);
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         getHolder().addCallback(this);
         setFocusable(true);
         images = new Bitmap[2];
         images[0] = (BitmapFactory.decodeResource(getResources(), R.drawable.level));
         images[1] = (BitmapFactory.decodeResource(getResources(), R.drawable.border));
+        gameLayout.addView(endMenu.getLayout(50), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
     private void init(){
@@ -51,7 +68,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback{
         leftBorder = new ArrayList<>();
         rightBorder = new ArrayList<>();
         levels = new ArrayList<>();
-        for(int i=0; i<GameActivity.displaySize.y/100+1;i++){
+        for(int i = 0; i< GameActivity.displaySize.y/100+1; i++){
             levels.add(new Level(images[0],GameActivity.displaySize.y-GameActivity.displaySize.y/4-i*100, i));
         }
         for(int i=GameActivity.displaySize.y/images[1].getHeight(); i>-2; i--){
@@ -108,7 +125,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback{
         return super.onTouchEvent(event);
     }
 
-    void update() {
+    public void update() {
         if(player.getAlive()) {
             player.update(speed);
             background.update(player.getDy());
@@ -192,7 +209,7 @@ class Game extends SurfaceView implements SurfaceHolder.Callback{
     }
 
     private void endGame(){
-        if(player.y>GameActivity.displaySize.y+player.getHeight()){
+        if(player.getY()>GameActivity.displaySize.y+player.getHeight()){
             player.setAlive(false);
             loss=true;
         }

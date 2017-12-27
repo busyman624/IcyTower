@@ -4,7 +4,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 
-class Accelerometer implements SensorEventListener{
+public class Accelerometer implements SensorEventListener{
     private float data;
 
     @Override
@@ -15,7 +15,7 @@ class Accelerometer implements SensorEventListener{
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 
-    float getData(){
+    public float getData(){
         return data;
     }
 }

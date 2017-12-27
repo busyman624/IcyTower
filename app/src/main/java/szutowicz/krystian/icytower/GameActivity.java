@@ -1,19 +1,16 @@
 package szutowicz.krystian.icytower;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Point;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
 
+import szutowicz.krystian.icytower.Views.Game;
+
 public class GameActivity extends Activity{
 
-    static Point displaySize;
+    public static Point displaySize;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +22,7 @@ public class GameActivity extends Activity{
         displaySize=new Point();
         getWindowManager().getDefaultDisplay().getSize(displaySize);
 
-        setContentView(new Game(this));
+        setContentView(R.layout.game_activity);
+        new Game(this);
     }
 }

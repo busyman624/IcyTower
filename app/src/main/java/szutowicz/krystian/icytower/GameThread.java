@@ -4,14 +4,16 @@ package szutowicz.krystian.icytower;
 import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
-class GameThread extends Thread{
+import szutowicz.krystian.icytower.Views.Game;
+
+public class GameThread extends Thread{
 
     private final SurfaceHolder surfaceHolder;
     private Game game;
     private boolean running;
     private Canvas canvas;
 
-    GameThread(SurfaceHolder surfaceHolder, Game game )    {
+    public GameThread(SurfaceHolder surfaceHolder, Game game )    {
         super();
         this.game=game;
         this.surfaceHolder=surfaceHolder;
@@ -62,7 +64,7 @@ class GameThread extends Thread{
         }
     }
 
-    void setRunning(boolean running)
+    public void setRunning(boolean running)
     {
         this.running=running;
     }

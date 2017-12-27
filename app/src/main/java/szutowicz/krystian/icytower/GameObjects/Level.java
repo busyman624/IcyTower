@@ -1,4 +1,4 @@
-package szutowicz.krystian.icytower;
+package szutowicz.krystian.icytower.GameObjects;
 
 
 import android.graphics.Bitmap;
@@ -7,18 +7,21 @@ import android.graphics.Rect;
 
 import java.util.Random;
 
-class Level extends GameObject {
+import szutowicz.krystian.icytower.Views.Game;
+import szutowicz.krystian.icytower.GameActivity;
+
+public class Level extends GameObject {
 
     private int number;
 
-    Level(Bitmap image, int y, int number){
+    public Level(Bitmap image, int y, int number){
         this.number=number;
         this.y=y;
         this.image= Bitmap.createScaledBitmap(image, scale(image), image.getHeight()/2, true);
         width=this.image.getWidth();
         height=this.image.getHeight();
         if(number==0 || number%50==0){
-            x=Game.images[1].getWidth();
+            x= Game.images[1].getWidth();
         }
         else{
             Random random = new Random();
@@ -27,11 +30,11 @@ class Level extends GameObject {
         }
     }
 
-    void update(int dy){
+    public void update(int dy){
         y=y+dy;
     }
 
-    void draw(Canvas canvas){
+    public void draw(Canvas canvas){
         canvas.drawBitmap(image, x, y, null);
     }
 

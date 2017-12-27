@@ -1,11 +1,15 @@
-package szutowicz.krystian.icytower;
+package szutowicz.krystian.icytower.GameObjects;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 
-class Player extends GameObject {
+import szutowicz.krystian.icytower.Accelerometer;
+import szutowicz.krystian.icytower.Views.Game;
+import szutowicz.krystian.icytower.GameActivity;
+
+public class Player extends GameObject {
 
     private Accelerometer accelerometer;
     private boolean alive;
@@ -13,25 +17,25 @@ class Player extends GameObject {
     private int wallJumpFrame;
     private int floorJumpFrame;
 
-    Player(Bitmap image, SensorManager sensorManager, int speed){
+    public Player(Bitmap image, SensorManager sensorManager, int speed){
         this.image=image;
         width=image.getWidth();
         height=image.getHeight();
         accelerometer = new Accelerometer();
         sensorManager.registerListener(accelerometer, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
                 SensorManager.SENSOR_DELAY_NORMAL);
-        x=GameActivity.displaySize.x/2;
+        x= GameActivity.displaySize.x/2;
         y=GameActivity.displaySize.y*3/4-height-5;
         dy=speed;
         wallJumpFrame =0;
         floorJumpFrame =0;
     }
 
-    void update(int speed){
+    public void update(int speed){
         int oldY=y;
 
-        x=(int)(x + accelerometer.getData() *3);
-        if(x<Game.images[1].getWidth()-1)
+        x=(int)(x + accelerometer.getData() * 4);
+        if(x< Game.images[1].getWidth()-1)
             x=Game.images[1].getWidth()-1;
         if(x>GameActivity.displaySize.x-Game.images[1].getWidth()-width+1)
             x=GameActivity.displaySize.x-Game.images[1].getWidth()-width+1;
@@ -58,7 +62,7 @@ class Player extends GameObject {
         }
     }
 
-    void draw(Canvas canvas){
+    public void draw(Canvas canvas){
         canvas.drawBitmap(image, x, y, null);
     }
 
@@ -93,31 +97,31 @@ class Player extends GameObject {
         }
     }
 
-    void setAlive(boolean alive){
+    public void setAlive(boolean alive){
         this.alive =alive;
     }
 
-    boolean getAlive(){
+    public boolean getAlive(){
         return alive;
     }
 
-    boolean getCanWallJump(){
+    public boolean getCanWallJump(){
         return canWallJump;
     }
 
-    void setWallJumpFrame(int wallJumpFrame){
+    public void setWallJumpFrame(int wallJumpFrame){
         this.wallJumpFrame = wallJumpFrame;
     }
 
-    int getWallJumpFrame(){
+    public int getWallJumpFrame(){
         return wallJumpFrame;
     }
 
-    void setFloorJumpFrame(int floorJumpFrame){
+    public void setFloorJumpFrame(int floorJumpFrame){
         this.floorJumpFrame=floorJumpFrame;
     }
 
-    int getFloorJumpFrame(){
+    public int getFloorJumpFrame(){
         return floorJumpFrame;
     }
 }
