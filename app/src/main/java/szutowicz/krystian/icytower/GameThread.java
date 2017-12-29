@@ -35,10 +35,12 @@ public class GameThread extends Thread{
             try {
                 canvas = this.surfaceHolder.lockCanvas();
                 synchronized (surfaceHolder) {
-                    this.game.update();
-                    this.game.draw(canvas);
+                    game.update();
+                    game.draw(canvas);
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             finally{
                 if(canvas!=null)
                 {
@@ -64,6 +66,9 @@ public class GameThread extends Thread{
         }
     }
 
+    public boolean getRunning(){
+        return running;
+    }
     public void setRunning(boolean running)
     {
         this.running=running;

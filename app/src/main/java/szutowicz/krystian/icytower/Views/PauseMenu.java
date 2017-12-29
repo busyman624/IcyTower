@@ -11,23 +11,21 @@ import android.widget.TextView;
 import szutowicz.krystian.icytower.MainMenuActivity;
 import szutowicz.krystian.icytower.R;
 
-class EndMenu{
+class PauseMenu {
 
     private Game game;
     private LinearLayout layout;
-    private TextView textFloor;
 
-    EndMenu(Game game) {
+    PauseMenu(Game game) {
         this.game=game;
         LayoutInflater layoutInflater = (LayoutInflater) game.gameActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        layout = (LinearLayout) layoutInflater.inflate(R.layout.end_menu, null);
-        textFloor = (TextView)layout.findViewById(R.id.end_floor);
-        layout.findViewById(R.id.end_restart).setOnClickListener(new RestartButtonListener());
-        layout.findViewById(R.id.end_exit).setOnClickListener(new ExitButtonListener());
+        layout = (LinearLayout) layoutInflater.inflate(R.layout.pause_menu, null);
+        layout.findViewById(R.id.pause_restart).setOnClickListener(new RestartButtonListener());
+        layout.findViewById(R.id.pause_resume).setOnClickListener(new ResumeButtonListener());
+        layout.findViewById(R.id.pause_exit).setOnClickListener(new ExitButtonListener());
     }
 
-    LinearLayout getLayout(int floor){
-        textFloor.setText("Floor: " + floor);
+    LinearLayout getLayout(){
         return layout;
     }
 
@@ -35,7 +33,17 @@ class EndMenu{
         @Override
         public void onClick(View view) {
             ((ViewManager)layout.getParent()).removeView(layout);
+            game.gameThread.setRunning(false);
             game.startNew();
+        }
+    }
+
+    private class ResumeButtonListener implements View.OnClickListener{
+
+        @Override
+        public void onClick(View view) {
+            ((ViewManager)layout.getParent()).removeView(layout);
+            game.setPaused(false);
         }
     }
 

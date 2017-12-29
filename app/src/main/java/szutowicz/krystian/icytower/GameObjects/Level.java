@@ -14,19 +14,19 @@ public class Level extends GameObject {
 
     private int number;
 
-    public Level(Bitmap image, int y, int number){
+    public Level(Bitmap image, int y, int number, int borderWidth){
         this.number=number;
         this.y=y;
-        this.image= Bitmap.createScaledBitmap(image, scale(image), image.getHeight()/2, true);
+        this.image= Bitmap.createScaledBitmap(image, scale(image, borderWidth), image.getHeight()/2, true);
         width=this.image.getWidth();
         height=this.image.getHeight();
         if(number==0 || number%50==0){
-            x= Game.images[1].getWidth();
+            x= borderWidth;
         }
         else{
             Random random = new Random();
-            x= random.nextInt(GameActivity.displaySize.x - 2 * Game.images[1].getWidth() - width)
-                    +Game.images[1].getWidth();
+            x= random.nextInt(GameActivity.displaySize.x - 2 * borderWidth - width)
+                    +borderWidth;
         }
     }
 
@@ -38,9 +38,9 @@ public class Level extends GameObject {
         canvas.drawBitmap(image, x, y, null);
     }
 
-    private int scale(Bitmap image){
+    private int scale(Bitmap image, int borderWidth){
         if(number==0 || number%50==0){
-            return GameActivity.displaySize.x - 2 * Game.images[1].getWidth();
+            return GameActivity.displaySize.x - 2 * borderWidth;
         }
         else{
             return image.getWidth()/(3+number/100);

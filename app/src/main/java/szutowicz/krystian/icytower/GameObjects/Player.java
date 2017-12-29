@@ -12,12 +12,12 @@ import szutowicz.krystian.icytower.GameActivity;
 public class Player extends GameObject {
 
     private Accelerometer accelerometer;
-    private boolean alive;
     private boolean canWallJump;
     private int wallJumpFrame;
     private int floorJumpFrame;
+    private int borderWidth;
 
-    public Player(Bitmap image, SensorManager sensorManager, int speed){
+    public Player(Bitmap image, SensorManager sensorManager, int speed, int borderWidth){
         this.image=image;
         width=image.getWidth();
         height=image.getHeight();
@@ -29,16 +29,17 @@ public class Player extends GameObject {
         dy=speed;
         wallJumpFrame =0;
         floorJumpFrame =0;
+        this.borderWidth=borderWidth;
     }
 
     public void update(int speed){
         int oldY=y;
 
         x=(int)(x + accelerometer.getData() * 4);
-        if(x< Game.images[1].getWidth()-1)
-            x=Game.images[1].getWidth()-1;
-        if(x>GameActivity.displaySize.x-Game.images[1].getWidth()-width+1)
-            x=GameActivity.displaySize.x-Game.images[1].getWidth()-width+1;
+        if(x< borderWidth-1)
+            x=borderWidth-1;
+        if(x>GameActivity.displaySize.x-borderWidth-width+1)
+            x=GameActivity.displaySize.x-borderWidth-width+1;
 
         if(wallJumpFrame >0){
             floorJumpFrame =0;
@@ -95,14 +96,6 @@ public class Player extends GameObject {
         } else {
             floorJumpFrame++;
         }
-    }
-
-    public void setAlive(boolean alive){
-        this.alive =alive;
-    }
-
-    public boolean getAlive(){
-        return alive;
     }
 
     public boolean getCanWallJump(){

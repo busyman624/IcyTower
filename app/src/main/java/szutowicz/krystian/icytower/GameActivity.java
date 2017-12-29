@@ -1,6 +1,8 @@
 package szutowicz.krystian.icytower;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Window;
@@ -11,6 +13,7 @@ import szutowicz.krystian.icytower.Views.Game;
 public class GameActivity extends Activity{
 
     public static Point displaySize;
+    public Game game;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,10 +22,17 @@ public class GameActivity extends Activity{
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         displaySize=new Point();
         getWindowManager().getDefaultDisplay().getSize(displaySize);
 
         setContentView(R.layout.game_activity);
-        new Game(this);
+        game = new Game(this);
+    }
+
+    @Override
+    public void onBackPressed(){
+        startActivity(new Intent(this, MainMenuActivity.class));
+        finish();
     }
 }
