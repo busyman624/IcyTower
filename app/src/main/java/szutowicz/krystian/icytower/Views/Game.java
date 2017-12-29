@@ -108,11 +108,13 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
 
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            if(!paused){
+            if(!paused && gameLayout.findViewById(R.id.end)==null){
                 gameLayout.addView(pauseMenu.getLayout(), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT));
+                paused=!paused;
             }
-            paused=!paused;
+            if(gameLayout.findViewById(R.id.pause)==null)
+                paused=!paused;
         }
         return super.onTouchEvent(event);
     }

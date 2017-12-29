@@ -5,17 +5,39 @@
     android:background="@drawable/bricks"
     android:gravity="center_vertical|left">
 
-    <Button
-        android:id="@+id/main_start"
+    <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:text="Start"/>
-    <Button
-        android:id="@+id/main_exit"
+        android:layout_margin="20dp">
+        <ImageButton
+            android:id="@+id/main_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:src="@drawable/button" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:clickable="false"
+            android:text="Start"/>
+    </FrameLayout>
+    <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:text="Exit"/>
+        android:layout_margin="20dp">
+        <ImageButton
+            android:id="@+id/main_exit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:src="@drawable/button" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:clickable="false"
+            android:text="Exit"/>
+    </FrameLayout>
 
 </LinearLayout>

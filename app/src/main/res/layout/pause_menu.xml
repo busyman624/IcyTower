@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
+    android:id="@+id/pause"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -10,27 +11,60 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center">
-        <Button
-            android:id="@+id/pause_restart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="40dp"
-            android:text="Restart"/>
 
-        <Button
-            android:id="@+id/pause_resume"
+        <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="40dp"
-            android:text="Resume"/>
+            android:layout_height="wrap_content">
+            <ImageButton
+                android:id="@+id/pause_restart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="40dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/button"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:clickable="false"
+                android:text="Restart" />
+        </FrameLayout>
 
-        <Button
-            android:id="@+id/pause_exit"
+        <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="40dp"
-            android:text="Main Menu"/>
+            android:layout_height="wrap_content">
+            <ImageButton
+                android:id="@+id/pause_resume"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="40dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/button"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:clickable="false"
+                android:text="Resume" />
+        </FrameLayout>
 
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageButton
+                android:id="@+id/pause_exit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="40dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/button"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:clickable="false"
+                android:text="Main Menu" />
+        </FrameLayout>
     </LinearLayout>
 
 </LinearLayout>
