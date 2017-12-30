@@ -1,28 +1,25 @@
 package szutowicz.krystian.icytower.Bluetooth;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.UUID;
 
+import szutowicz.krystian.icytower.MultiPlayerActivity;
 import szutowicz.krystian.icytower.R;
 
 public class Client extends Thread{
 
-    public Activity activity;
+    public MultiPlayerActivity activity;
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothSocket bluetoothSocket;
     private UUID uuid;
@@ -30,7 +27,7 @@ public class Client extends Thread{
     public TextView status;
     private LinearLayout discoveredDevicesLayout;
 
-    public Client(Activity activity, UUID uuid){
+    public Client(MultiPlayerActivity activity, UUID uuid){
         this.activity=activity;
         this.uuid = uuid;
         initUIComponents();
@@ -68,7 +65,7 @@ public class Client extends Thread{
                         Toast.LENGTH_LONG).show();
             }
         });
-        //TODO start connection
+        activity.beginConnection(bluetoothSocket);
     }
 
     public void cancel(){
