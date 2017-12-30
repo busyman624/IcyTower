@@ -15,6 +15,8 @@ import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 
+import szutowicz.krystian.icytower.Bluetooth.Connection;
+import szutowicz.krystian.icytower.GameObjects.GhostPlayer;
 import szutowicz.krystian.icytower.SinglePlayerActivity;
 import szutowicz.krystian.icytower.GameObjects.Background;
 import szutowicz.krystian.icytower.GameObjects.Border;
@@ -25,8 +27,9 @@ import szutowicz.krystian.icytower.R;
 
 public class Game extends SurfaceView implements SurfaceHolder.Callback{
 
-    public SinglePlayerActivity singlePlayerActivity;
+    public Activity activity;
     public GameThread gameThread;
+    public Connection connection;
     private SensorManager sensorManager;
 
     private RelativeLayout gameLayout;
@@ -34,10 +37,12 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
     private PauseMenu pauseMenu;
 
     private int speed =3;
+    private boolean isMultiPlayer;
     private Bitmap[] images;
 
     private Background background;
     private Player player;
+    private GhostPlayer ghostPlayer;
     private ArrayList<Border> leftBorder;
     private ArrayList<Border> rightBorder;
     private ArrayList<Level> levels;
@@ -45,14 +50,29 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
     private int maxFloor;
     private boolean paused;
 
-    public Game (Context context){
-        super(context);
-        singlePlayerActivity =(SinglePlayerActivity)context;
-        gameLayout=(RelativeLayout)((Activity)context).findViewById(R.id.gameLayout);
+    public Game (Activity activity){
+        super(activity);
+        this.activity=activity;
+        gameLayout=(RelativeLayout)activity.findViewById(R.id.gameLayout);
+        isMultiPlayer=false;
+        init();
+    }
+
+    public Game (Activity activity, Connection connection){
+        super(activity);
+        this.activity=activity;
+        this.connection=connection;
+        gameLayout=(RelativeLayout)activity.findViewById(R.id.multiplayer_game);
+        isMultiPlayer=true;
+        init();
+    }
+
+    private void init(){
+
         gameLayout.addView(this);
         endMenu=new EndMenu(this);
         pauseMenu=new PauseMenu(this);
-        sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        sensorManager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
         getHolder().addCallback(this);
         setFocusable(true);
         images = new Bitmap[4];
@@ -65,7 +85,14 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
     void startNew(){
         gameThread =new GameThread(getHolder(), this);
         background =new Background(images[2]);
-        player= new Player(images[3], sensorManager, speed, images[1].getWidth());
+        if(isMultiPlayer){
+            player=new Player(images[3], sensorManager, speed, images[1].getWidth(), connection);
+            ghostPlayer = new GhostPlayer(images[3]);
+            connection.setRunning(true);
+            connection.start();
+        }
+        else
+            player= new Player(images[3], sensorManager, speed, images[1].getWidth());
         leftBorder = new ArrayList<>();
         rightBorder = new ArrayList<>();
         levels = new ArrayList<>();
@@ -97,6 +124,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
         {
             try{
                 gameThread.setRunning(false);
+                connection.setRunning(false);
                 gameThread.join();
                 retry = false;
             }
@@ -122,6 +150,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
     public void update() {
         if(!paused) {
             player.update(speed);
+            ghostPlayer.update(connection.getLastMessage());
             background.update(player.getDy());
             for (int i = 0; i < levels.size(); i++) {
                 levels.get(i).update(player.getDy());
@@ -162,6 +191,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
             speed=maxFloor/100+3;
             if(!keepPlaying()){
                 gameThread.setRunning(false);
+                connection.setRunning(false);
                 showEndMenu();
             }
         }
@@ -182,12 +212,13 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
             for(Level level: levels){
                 level.draw(canvas);
             }
+            ghostPlayer.draw(canvas);
             player.draw(canvas);
         }
     }
 
     private void showEndMenu(){
-        singlePlayerActivity.runOnUiThread(new Runnable() {
+        activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 gameLayout.addView(endMenu.getLayout(maxFloor), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,

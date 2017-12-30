@@ -21,7 +21,7 @@ public class Client extends Thread{
 
     public MultiPlayerActivity activity;
     private BluetoothAdapter bluetoothAdapter;
-    private BluetoothSocket bluetoothSocket;
+    public BluetoothSocket bluetoothSocket;
     private UUID uuid;
 
     public TextView status;
@@ -65,7 +65,7 @@ public class Client extends Thread{
                         Toast.LENGTH_LONG).show();
             }
         });
-        activity.beginConnection(bluetoothSocket);
+        //activity.beginConnection(bluetoothSocket);
     }
 
     public void cancel(){
@@ -81,6 +81,15 @@ public class Client extends Thread{
     private void initUIComponents(){
         status = (TextView)activity.findViewById(R.id.bluetooth_status);
         discoveredDevicesLayout = (LinearLayout)activity.findViewById(R.id.bluetooth_client);
+    }
+
+    private void handleConnection(){
+        start();
+        try{
+            join();
+        }
+        catch(InterruptedException e){}
+        activity.beginConnection(bluetoothSocket);
     }
 
     public void addDiscoveredDevice(BluetoothDevice bluetoothDevice){
@@ -111,7 +120,7 @@ public class Client extends Thread{
             catch(IOException e){
                 Log.d("Client", "Cannot create socket");
             }
-            start();
+            handleConnection();
         }
     }
 }

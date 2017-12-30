@@ -12,7 +12,9 @@ public class Connection extends Thread{
     private BluetoothSocket bluetoothSocket;
     private InputStream inputStream;
     private OutputStream outputStream;
-    public Message message;
+    private Message lastMessage;
+
+    private boolean running;
 
     public Connection(BluetoothSocket bluetoothSocket){
         this.bluetoothSocket=bluetoothSocket;
@@ -29,7 +31,6 @@ public class Connection extends Thread{
         catch (IOException e){
             Log.d("Connection", "Cannot get Output Stream");
         }
-        start();
     }
 
     @Override
@@ -37,10 +38,10 @@ public class Connection extends Thread{
         byte[] buffer = new byte[1024];
         int numBytes;
 
-        while(true){
+        while(running){
             try{
                 numBytes = inputStream.read(buffer);
-                message = new Message(new String(buffer, 9, numBytes));
+                lastMessage = new Message(new String(buffer, 9, numBytes));
             }
             catch(IOException e){
                 Log.d("Connection", "Input stream disconnected");
@@ -49,8 +50,8 @@ public class Connection extends Thread{
         }
     }
 
-    public void write(String message){
-        byte[] buffer = message.getBytes();
+    public void write(Message message){
+        byte[] buffer = message.fullMessage.getBytes();
         try{
             outputStream.write(buffer);
         }
@@ -66,5 +67,13 @@ public class Connection extends Thread{
         catch (IOException closeException){
             Log.d("Client", "Cannot close socker");
         }
+    }
+
+    public void setRunning(boolean running){
+        this.running=running;
+    }
+
+    public Message getLastMessage(){
+        return lastMessage;
     }
 }

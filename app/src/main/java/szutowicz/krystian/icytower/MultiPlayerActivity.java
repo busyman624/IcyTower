@@ -26,7 +26,6 @@ public class MultiPlayerActivity extends Activity {
     private Host host;
     private Client client;
     private UUID uuid;
-    public Connection connection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,12 +39,12 @@ public class MultiPlayerActivity extends Activity {
         setContentView(R.layout.multi_player_activity);
         uuid = UUID.fromString("49cd4af4-ed50-11e7-8c3f-9a214cf093ae");
 
-        findViewById(R.id.debug).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                connection.write("0,1,1");
-            }
-        });
+//        findViewById(R.id.debug).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                connection.write("0,1,1");
+//            }
+//        });
 
         findViewById(R.id.bluetooth_host_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,7 +66,6 @@ public class MultiPlayerActivity extends Activity {
                 client = new Client(MultiPlayerActivity.this, uuid);
             }
         });
-                //game = new Game(this);
     }
 
     private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -81,7 +79,7 @@ public class MultiPlayerActivity extends Activity {
     };
 
     public void beginConnection(BluetoothSocket bluetoothSocket){
-        connection = new Connection(bluetoothSocket);
+        game = new Game(this, new Connection(bluetoothSocket));
         host = null ;
         client = null;
     }

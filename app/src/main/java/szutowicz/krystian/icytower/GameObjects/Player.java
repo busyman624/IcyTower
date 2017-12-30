@@ -6,10 +6,13 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 
 import szutowicz.krystian.icytower.Accelerometer;
+import szutowicz.krystian.icytower.Bluetooth.Connection;
+import szutowicz.krystian.icytower.Bluetooth.Message;
 import szutowicz.krystian.icytower.SinglePlayerActivity;
 
 public class Player extends GameObject {
 
+    private Connection connection;
     private Accelerometer accelerometer;
     private boolean canWallJump;
     private int wallJumpFrame;
@@ -17,6 +20,15 @@ public class Player extends GameObject {
     private int borderWidth;
 
     public Player(Bitmap image, SensorManager sensorManager, int speed, int borderWidth){
+        init(image, sensorManager, speed, borderWidth);
+    }
+
+    public Player(Bitmap image, SensorManager sensorManager, int speed, int borderWidth, Connection connection){
+        this.connection=connection;
+        init(image, sensorManager, speed, borderWidth);
+    }
+
+    private void init(Bitmap image, SensorManager sensorManager, int speed, int borderWidth){
         this.image=image;
         width=image.getWidth();
         height=image.getHeight();
@@ -60,6 +72,9 @@ public class Player extends GameObject {
         else{
             dy=speed;
         }
+
+        if(connection!=null)
+            connection.write(new Message(true, x, y));
     }
 
     public void draw(Canvas canvas){

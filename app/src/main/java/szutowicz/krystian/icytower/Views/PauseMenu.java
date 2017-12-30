@@ -17,7 +17,7 @@ class PauseMenu {
 
     PauseMenu(Game game) {
         this.game=game;
-        LayoutInflater layoutInflater = (LayoutInflater) game.singlePlayerActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater layoutInflater = (LayoutInflater) game.activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         layout = (LinearLayout) layoutInflater.inflate(R.layout.pause_menu, null);
         layout.findViewById(R.id.pause_restart).setOnClickListener(new RestartButtonListener());
         layout.findViewById(R.id.pause_resume).setOnClickListener(new ResumeButtonListener());
@@ -49,8 +49,8 @@ class PauseMenu {
     private class ExitButtonListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            game.singlePlayerActivity.startActivity(new Intent(game.singlePlayerActivity, MainMenuActivity.class));
-            game.singlePlayerActivity.finish();
+            game.activity.startActivity(new Intent(game.activity, MainMenuActivity.class));
+            game.activity.finish();
         }
     }
 }

@@ -19,6 +19,7 @@ public class Host extends Thread{
     private MultiPlayerActivity activity;
     private BluetoothAdapter bluetoothAdapter;
     private BluetoothServerSocket bluetoothServerSocket;
+    public BluetoothSocket bluetoothSocket;
     private UUID uuid;
 
     public TextView status;
@@ -39,7 +40,7 @@ public class Host extends Thread{
 
     @Override
     public void run(){
-        BluetoothSocket bluetoothSocket= null;
+        bluetoothSocket= null;
 
         while(true){
             try{
@@ -64,7 +65,7 @@ public class Host extends Thread{
                                 Toast.LENGTH_LONG).show();
                     }
                 });
-                activity.beginConnection(bluetoothSocket);
+                //activity.beginConnection(bluetoothSocket);
                 break;
             }
         }
@@ -85,6 +86,15 @@ public class Host extends Thread{
         activity.findViewById(R.id.bluetooth_visible).setOnClickListener(new DiscoverEnableButtonListener());
     }
 
+    private void handleConnection(){
+        start();
+        try{
+            join();
+        }
+        catch(InterruptedException e){}
+        activity.beginConnection(bluetoothSocket);
+    }
+
     private class DiscoverEnableButtonListener implements View.OnClickListener{
         @Override
         public void onClick(View view) {
@@ -101,7 +111,7 @@ public class Host extends Thread{
             catch (IOException e){
                 Log.d("Host", "Server socked exception");
             }
-            start();
+            handleConnection();
         }
     }
 }

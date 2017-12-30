@@ -12,7 +12,7 @@ import szutowicz.krystian.icytower.Views.Game;
 
 public class SinglePlayerActivity extends Activity{
 
-    public static Point displaySize;
+    public static Point displaySize; //TODO move to main menu
     public Game game;
 
     @Override
