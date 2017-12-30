@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import java.util.UUID;
 
@@ -39,17 +40,10 @@ public class MultiPlayerActivity extends Activity {
         setContentView(R.layout.multi_player_activity);
         uuid = UUID.fromString("49cd4af4-ed50-11e7-8c3f-9a214cf093ae");
 
-//        findViewById(R.id.debug).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                connection.write("0,1,1");
-//            }
-//        });
-
         findViewById(R.id.bluetooth_host_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                findViewById(R.id.bluetooth_lobby).setVisibility(View.INVISIBLE);
+                findViewById(R.id.bluetooth_lobby).setVisibility(View.GONE);
                 findViewById(R.id.bluetooth_host).setVisibility(View.VISIBLE);
 
                 host=new Host(MultiPlayerActivity.this, uuid);
@@ -58,7 +52,7 @@ public class MultiPlayerActivity extends Activity {
         findViewById(R.id.bluetooth_client_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                findViewById(R.id.bluetooth_lobby).setVisibility(View.INVISIBLE);
+                findViewById(R.id.bluetooth_lobby).setVisibility(View.GONE);
                 findViewById(R.id.bluetooth_client).setVisibility(View.VISIBLE);
 
                 IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
@@ -73,7 +67,7 @@ public class MultiPlayerActivity extends Activity {
         public void onReceive(Context context, Intent intent) {
             if(BluetoothDevice.ACTION_FOUND.equals(intent.getAction())){
                 BluetoothDevice bluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                client.addDiscoveredDevice(bluetoothDevice);
+                client.addDevice(bluetoothDevice);
             }
         }
     };
@@ -84,21 +78,14 @@ public class MultiPlayerActivity extends Activity {
         client = null;
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         if(requestCode==1){
-            if(resultCode==Activity.RESULT_OK) {
-                if (host != null)
-                    host.status.setText("Enabled");
-                if (client != null)
-                    client.status.setText("Enabled");
-            }
             if(resultCode==Activity.RESULT_CANCELED) {
-                if (host != null)
-                    host.status.setText("Disabled");
-                if (client != null)
-                    client.status.setText("Disabled");
+                startActivity(new Intent(this, MainMenuActivity.class));
+                Toast.makeText(this, "Bluetooth is required, try again",
+                        Toast.LENGTH_LONG).show();
+                finish();
             }
         }
     }

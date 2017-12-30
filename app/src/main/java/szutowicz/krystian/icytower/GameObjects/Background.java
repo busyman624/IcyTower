@@ -3,7 +3,7 @@ package szutowicz.krystian.icytower.GameObjects;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
-import szutowicz.krystian.icytower.SinglePlayerActivity;
+import szutowicz.krystian.icytower.MainMenuActivity;
 
 public class Background {
 
@@ -11,13 +11,13 @@ public class Background {
     private int y;
 
     public Background(Bitmap image){
-        this.image=Bitmap.createScaledBitmap(image, SinglePlayerActivity.displaySize.x, SinglePlayerActivity.displaySize.y, true);
+        this.image=Bitmap.createScaledBitmap(image, MainMenuActivity.displaySize.x, MainMenuActivity.displaySize.y, true);
     }
 
     public void update(int dy){
         y=y+dy;
 
-        if(y> SinglePlayerActivity.displaySize.y){
+        if(y> MainMenuActivity.displaySize.y){
             y=0;
         }
     }
@@ -25,7 +25,7 @@ public class Background {
     public void draw(Canvas canvas){
         canvas.drawBitmap(image, 0, y, null);
         if(y>0){
-            canvas.drawBitmap(image, 0, y- SinglePlayerActivity.displaySize.y, null);
+            canvas.drawBitmap(image, 0, y- MainMenuActivity.displaySize.y, null);
         }
     }
 }

@@ -41,7 +41,7 @@ public class Connection extends Thread{
         while(running){
             try{
                 numBytes = inputStream.read(buffer);
-                lastMessage = new Message(new String(buffer, 9, numBytes));
+                lastMessage = new Message(new String(buffer, 0, numBytes));
             }
             catch(IOException e){
                 Log.d("Connection", "Input stream disconnected");

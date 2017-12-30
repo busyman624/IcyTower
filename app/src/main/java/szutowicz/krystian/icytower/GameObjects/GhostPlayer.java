@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 
 import szutowicz.krystian.icytower.Bluetooth.Message;
+import szutowicz.krystian.icytower.MainMenuActivity;
 import szutowicz.krystian.icytower.SinglePlayerActivity;
 
 public class GhostPlayer extends GameObject{
@@ -14,8 +15,8 @@ public class GhostPlayer extends GameObject{
 
     public GhostPlayer(Bitmap image){
         this.image=image;
-        x= SinglePlayerActivity.displaySize.x/2;
-        y= SinglePlayerActivity.displaySize.y*3/4-height-5;
+        x= MainMenuActivity.displaySize.x/2;
+        y= MainMenuActivity.displaySize.y*3/4-height-5;
         paint = new Paint();
         paint.setAlpha(60);
     }

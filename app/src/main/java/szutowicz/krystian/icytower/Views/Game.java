@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 import szutowicz.krystian.icytower.Bluetooth.Connection;
 import szutowicz.krystian.icytower.GameObjects.GhostPlayer;
+import szutowicz.krystian.icytower.MainMenuActivity;
 import szutowicz.krystian.icytower.SinglePlayerActivity;
 import szutowicz.krystian.icytower.GameObjects.Background;
 import szutowicz.krystian.icytower.GameObjects.Border;
@@ -53,7 +54,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
     public Game (Activity activity){
         super(activity);
         this.activity=activity;
-        gameLayout=(RelativeLayout)activity.findViewById(R.id.gameLayout);
+        gameLayout=(RelativeLayout)activity.findViewById(R.id.single_player_layout);
         isMultiPlayer=false;
         init();
     }
@@ -62,13 +63,12 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
         super(activity);
         this.activity=activity;
         this.connection=connection;
-        gameLayout=(RelativeLayout)activity.findViewById(R.id.multiplayer_game);
+        gameLayout=(RelativeLayout)activity.findViewById(R.id.multi_player_layout);
         isMultiPlayer=true;
         init();
     }
 
     private void init(){
-
         gameLayout.addView(this);
         endMenu=new EndMenu(this);
         pauseMenu=new PauseMenu(this);
@@ -96,12 +96,12 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
         leftBorder = new ArrayList<>();
         rightBorder = new ArrayList<>();
         levels = new ArrayList<>();
-        for(int i = 0; i< SinglePlayerActivity.displaySize.y/100+1; i++){
-            levels.add(new Level(images[0], SinglePlayerActivity.displaySize.y- SinglePlayerActivity.displaySize.y/4-i*100, i, images[1].getWidth()));
+        for(int i = 0; i< MainMenuActivity.displaySize.y/100+1; i++){
+            levels.add(new Level(images[0], MainMenuActivity.displaySize.y- MainMenuActivity.displaySize.y/4-i*100, i, images[1].getWidth()));
         }
-        for(int i = SinglePlayerActivity.displaySize.y/images[1].getHeight(); i>-2; i--){
+        for(int i = MainMenuActivity.displaySize.y/images[1].getHeight(); i>-2; i--){
             leftBorder.add(new Border(images[1], 0, i*images[1].getHeight()));
-            rightBorder.add(new Border(images[1], SinglePlayerActivity.displaySize.x - images[1].getWidth(), i * images[1].getHeight()));
+            rightBorder.add(new Border(images[1], MainMenuActivity.displaySize.x - images[1].getWidth(), i * images[1].getHeight()));
         }
         paused=true;
         maxFloor =0;
@@ -124,7 +124,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
         {
             try{
                 gameThread.setRunning(false);
-                connection.setRunning(false);
+                if(isMultiPlayer)
+                    connection.setRunning(false);
                 gameThread.join();
                 retry = false;
             }
@@ -150,7 +151,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
     public void update() {
         if(!paused) {
             player.update(speed);
-            ghostPlayer.update(connection.getLastMessage());
+            if(isMultiPlayer)
+                ghostPlayer.update(connection.getLastMessage());
             background.update(player.getDy());
             for (int i = 0; i < levels.size(); i++) {
                 levels.get(i).update(player.getDy());
@@ -160,7 +162,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
                         maxFloor = levels.get(i).getNumber();
                     }
                 }
-                if (levels.get(i).getY() > SinglePlayerActivity.displaySize.y + 20) {
+                if (levels.get(i).getY() > MainMenuActivity.displaySize.y + 20) {
                     levels.remove(i);
                     if(levels.get(levels.size() - 1).getNumber() + 1<=1000){
                         levels.add(new Level(images[0],
@@ -178,13 +180,13 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
                         || borderCollistion(player, rightBorder.get(i)))
                     player.setWallJumpFrame(1);
 
-                if (leftBorder.get(i).getY() > SinglePlayerActivity.displaySize.y) {
+                if (leftBorder.get(i).getY() > MainMenuActivity.displaySize.y) {
                     leftBorder.remove(i);
                     rightBorder.remove(i);
                     leftBorder.add(new Border(images[1], 0,
                             leftBorder.get(leftBorder.size() - 1).getY() - leftBorder.get(leftBorder.size() - 1).getHeight()));
                     rightBorder.add(new Border(images[1],
-                            SinglePlayerActivity.displaySize.x - rightBorder.get(rightBorder.size() - 1).getWidth(),
+                            MainMenuActivity.displaySize.x - rightBorder.get(rightBorder.size() - 1).getWidth(),
                             rightBorder.get(rightBorder.size() - 1).getY() - rightBorder.get(rightBorder.size() - 1).getHeight()));
                 }
             }
@@ -212,7 +214,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
             for(Level level: levels){
                 level.draw(canvas);
             }
-            ghostPlayer.draw(canvas);
+            if(isMultiPlayer)
+                ghostPlayer.draw(canvas);
             player.draw(canvas);
         }
     }
@@ -239,7 +242,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
     }
 
     private boolean keepPlaying(){
-        if(player.getY()> SinglePlayerActivity.displaySize.y+player.getHeight()
+        if(player.getY()> MainMenuActivity.displaySize.y+player.getHeight()
                 || maxFloor == 1000){
             return false;
         }

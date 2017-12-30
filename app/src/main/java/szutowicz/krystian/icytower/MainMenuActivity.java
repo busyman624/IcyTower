@@ -3,12 +3,15 @@ package szutowicz.krystian.icytower;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
 public class MainMenuActivity extends Activity {
+
+    public static Point displaySize;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,6 +22,9 @@ public class MainMenuActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         setContentView(R.layout.main_menu_activity);
+
+        displaySize=new Point();
+        getWindowManager().getDefaultDisplay().getSize(displaySize);
 
         findViewById(R.id.main_single).setOnClickListener(new SingleButtonListener());
         findViewById(R.id.main_multi).setOnClickListener(new MultiButtonListener());
