@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp">
         <ImageButton
-            android:id="@+id/main_start"
+            android:id="@+id/main_single"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
@@ -20,8 +20,27 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:clickable="false"
-            android:text="Start"/>
+            android:text="Single Player"/>
     </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp">
+        <ImageButton
+            android:id="@+id/main_multi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:src="@drawable/button" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:clickable="false"
+            android:text="Multi Player"/>
+    </FrameLayout>
+
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

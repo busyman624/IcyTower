@@ -19,7 +19,7 @@ class EndMenu{
 
     EndMenu(Game game) {
         this.game=game;
-        LayoutInflater layoutInflater = (LayoutInflater) game.gameActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater layoutInflater = (LayoutInflater) game.singlePlayerActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         layout = (LinearLayout) layoutInflater.inflate(R.layout.end_menu, null);
         textFloor = (TextView)layout.findViewById(R.id.end_floor);
         layout.findViewById(R.id.end_restart).setOnClickListener(new RestartButtonListener());
@@ -42,8 +42,8 @@ class EndMenu{
     private class ExitButtonListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            game.gameActivity.startActivity(new Intent(game.gameActivity, MainMenuActivity.class));
-            game.gameActivity.finish();
+            game.singlePlayerActivity.startActivity(new Intent(game.singlePlayerActivity, MainMenuActivity.class));
+            game.singlePlayerActivity.finish();
         }
     }
 }

@@ -6,8 +6,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 
 import szutowicz.krystian.icytower.Accelerometer;
-import szutowicz.krystian.icytower.Views.Game;
-import szutowicz.krystian.icytower.GameActivity;
+import szutowicz.krystian.icytower.SinglePlayerActivity;
 
 public class Player extends GameObject {
 
@@ -24,8 +23,8 @@ public class Player extends GameObject {
         accelerometer = new Accelerometer();
         sensorManager.registerListener(accelerometer, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
                 SensorManager.SENSOR_DELAY_NORMAL);
-        x= GameActivity.displaySize.x/2;
-        y=GameActivity.displaySize.y*3/4-height-5;
+        x= SinglePlayerActivity.displaySize.x/2;
+        y= SinglePlayerActivity.displaySize.y*3/4-height-5;
         dy=speed;
         wallJumpFrame =0;
         floorJumpFrame =0;
@@ -38,8 +37,8 @@ public class Player extends GameObject {
         x=(int)(x + accelerometer.getData() * 4);
         if(x< borderWidth-1)
             x=borderWidth-1;
-        if(x>GameActivity.displaySize.x-borderWidth-width+1)
-            x=GameActivity.displaySize.x-borderWidth-width+1;
+        if(x> SinglePlayerActivity.displaySize.x-borderWidth-width+1)
+            x= SinglePlayerActivity.displaySize.x-borderWidth-width+1;
 
         if(wallJumpFrame >0){
             floorJumpFrame =0;
@@ -54,7 +53,7 @@ public class Player extends GameObject {
             y = y + 12;
         }
 
-        if(y<GameActivity.displaySize.y/5&&oldY>y){
+        if(y< SinglePlayerActivity.displaySize.y/5&&oldY>y){
             dy=oldY-y;
             y=oldY;
         }
@@ -71,7 +70,7 @@ public class Player extends GameObject {
 
         if (wallJumpFrame < 10) {
             y = y - 26;
-            if(x<GameActivity.displaySize.x/2){
+            if(x< SinglePlayerActivity.displaySize.x/2){
                 x = x + 15;
             }
             else{

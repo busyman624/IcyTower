@@ -20,15 +20,25 @@ public class MainMenuActivity extends Activity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         setContentView(R.layout.main_menu_activity);
 
-        findViewById(R.id.main_start).setOnClickListener(new StartButtonListener());
+        findViewById(R.id.main_single).setOnClickListener(new SingleButtonListener());
+        findViewById(R.id.main_multi).setOnClickListener(new MultiButtonListener());
         findViewById(R.id.main_exit).setOnClickListener(new ExitButtonListener());
     }
 
-    private class StartButtonListener implements View.OnClickListener{
+    private class SingleButtonListener implements View.OnClickListener{
 
         @Override
         public void onClick(View view) {
-            startActivity(new Intent(MainMenuActivity.this, GameActivity.class));
+            startActivity(new Intent(MainMenuActivity.this, SinglePlayerActivity.class));
+            finish();
+        }
+    }
+
+    private class MultiButtonListener implements View.OnClickListener{
+
+        @Override
+        public void onClick(View view) {
+            startActivity(new Intent(MainMenuActivity.this, MultiPlayerActivity.class));
             finish();
         }
     }

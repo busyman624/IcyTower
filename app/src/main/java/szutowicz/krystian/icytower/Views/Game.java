@@ -15,7 +15,7 @@ import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 
-import szutowicz.krystian.icytower.GameActivity;
+import szutowicz.krystian.icytower.SinglePlayerActivity;
 import szutowicz.krystian.icytower.GameObjects.Background;
 import szutowicz.krystian.icytower.GameObjects.Border;
 import szutowicz.krystian.icytower.GameObjects.Level;
@@ -25,7 +25,7 @@ import szutowicz.krystian.icytower.R;
 
 public class Game extends SurfaceView implements SurfaceHolder.Callback{
 
-    public GameActivity gameActivity;
+    public SinglePlayerActivity singlePlayerActivity;
     public GameThread gameThread;
     private SensorManager sensorManager;
 
@@ -47,7 +47,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
 
     public Game (Context context){
         super(context);
-        gameActivity=(GameActivity)context;
+        singlePlayerActivity =(SinglePlayerActivity)context;
         gameLayout=(RelativeLayout)((Activity)context).findViewById(R.id.gameLayout);
         gameLayout.addView(this);
         endMenu=new EndMenu(this);
@@ -69,12 +69,12 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
         leftBorder = new ArrayList<>();
         rightBorder = new ArrayList<>();
         levels = new ArrayList<>();
-        for(int i = 0; i< GameActivity.displaySize.y/100+1; i++){
-            levels.add(new Level(images[0],GameActivity.displaySize.y-GameActivity.displaySize.y/4-i*100, i, images[1].getWidth()));
+        for(int i = 0; i< SinglePlayerActivity.displaySize.y/100+1; i++){
+            levels.add(new Level(images[0], SinglePlayerActivity.displaySize.y- SinglePlayerActivity.displaySize.y/4-i*100, i, images[1].getWidth()));
         }
-        for(int i=GameActivity.displaySize.y/images[1].getHeight(); i>-2; i--){
+        for(int i = SinglePlayerActivity.displaySize.y/images[1].getHeight(); i>-2; i--){
             leftBorder.add(new Border(images[1], 0, i*images[1].getHeight()));
-            rightBorder.add(new Border(images[1], GameActivity.displaySize.x - images[1].getWidth(), i * images[1].getHeight()));
+            rightBorder.add(new Border(images[1], SinglePlayerActivity.displaySize.x - images[1].getWidth(), i * images[1].getHeight()));
         }
         paused=true;
         maxFloor =0;
@@ -131,7 +131,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
                         maxFloor = levels.get(i).getNumber();
                     }
                 }
-                if (levels.get(i).getY() > GameActivity.displaySize.y + 20) {
+                if (levels.get(i).getY() > SinglePlayerActivity.displaySize.y + 20) {
                     levels.remove(i);
                     if(levels.get(levels.size() - 1).getNumber() + 1<=1000){
                         levels.add(new Level(images[0],
@@ -149,13 +149,13 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
                         || borderCollistion(player, rightBorder.get(i)))
                     player.setWallJumpFrame(1);
 
-                if (leftBorder.get(i).getY() > GameActivity.displaySize.y) {
+                if (leftBorder.get(i).getY() > SinglePlayerActivity.displaySize.y) {
                     leftBorder.remove(i);
                     rightBorder.remove(i);
                     leftBorder.add(new Border(images[1], 0,
                             leftBorder.get(leftBorder.size() - 1).getY() - leftBorder.get(leftBorder.size() - 1).getHeight()));
                     rightBorder.add(new Border(images[1],
-                            GameActivity.displaySize.x - rightBorder.get(rightBorder.size() - 1).getWidth(),
+                            SinglePlayerActivity.displaySize.x - rightBorder.get(rightBorder.size() - 1).getWidth(),
                             rightBorder.get(rightBorder.size() - 1).getY() - rightBorder.get(rightBorder.size() - 1).getHeight()));
                 }
             }
@@ -187,7 +187,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
     }
 
     private void showEndMenu(){
-        gameActivity.runOnUiThread(new Runnable() {
+        singlePlayerActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 gameLayout.addView(endMenu.getLayout(maxFloor), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -208,7 +208,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
     }
 
     private boolean keepPlaying(){
-        if(player.getY()>GameActivity.displaySize.y+player.getHeight()
+        if(player.getY()> SinglePlayerActivity.displaySize.y+player.getHeight()
                 || maxFloor == 1000){
             return false;
         }

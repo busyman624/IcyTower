@@ -10,7 +10,7 @@ import android.view.WindowManager;
 
 import szutowicz.krystian.icytower.Views.Game;
 
-public class GameActivity extends Activity{
+public class SinglePlayerActivity extends Activity{
 
     public static Point displaySize;
     public Game game;
