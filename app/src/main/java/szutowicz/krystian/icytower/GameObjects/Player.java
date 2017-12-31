@@ -19,6 +19,7 @@ public class Player extends GameObject {
     private int floorJumpFrame;
     private int borderWidth;
     private int totalY;
+    private int maxFloor;
 
     public Player(Bitmap image, SensorManager sensorManager, int speed, int borderWidth){
         init(image, sensorManager, speed, borderWidth);
@@ -76,8 +77,9 @@ public class Player extends GameObject {
         }
 
         if(connection!=null){
+            float relativeX=(float)(x-borderWidth)/(MainMenuActivity.displaySize.x - 2 * borderWidth);
             totalY=totalY-oldY+y-dy;
-            connection.write(new Message(true, x, totalY));
+            connection.write(new Message(true, relativeX, totalY, maxFloor));
         }
     }
 
@@ -137,4 +139,8 @@ public class Player extends GameObject {
     }
 
     public int getTotalY() { return totalY; }
+
+    public int getMaxFloor() {return maxFloor; }
+
+    public void setMaxFloor(int maxFloor) { this.maxFloor = maxFloor; }
 }

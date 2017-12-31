@@ -62,6 +62,7 @@ public class Client extends Thread{
                             Toast.LENGTH_LONG).show();
                 }
             });
+            activity.startActivity(new Intent(activity, MainMenuActivity.class));
             activity.finish();
             return;
         }

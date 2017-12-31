@@ -16,7 +16,7 @@ public class Connection extends Thread{
 
     public Connection(BluetoothSocket bluetoothSocket){
         this.bluetoothSocket=bluetoothSocket;
-
+        lastMessage=new Message();
         try{
             inputStream=bluetoothSocket.getInputStream();
         }

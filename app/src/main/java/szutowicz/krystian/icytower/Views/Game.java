@@ -16,9 +16,9 @@ import android.widget.RelativeLayout;
 import java.util.ArrayList;
 
 import szutowicz.krystian.icytower.Bluetooth.Connection;
+import szutowicz.krystian.icytower.Bluetooth.Message;
 import szutowicz.krystian.icytower.GameObjects.GhostPlayer;
 import szutowicz.krystian.icytower.MainMenuActivity;
-import szutowicz.krystian.icytower.SinglePlayerActivity;
 import szutowicz.krystian.icytower.GameObjects.Background;
 import szutowicz.krystian.icytower.GameObjects.Border;
 import szutowicz.krystian.icytower.GameObjects.Level;
@@ -34,7 +34,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
     private SensorManager sensorManager;
 
     private RelativeLayout gameLayout;
-    private EndMenu endMenu;
+    private SinglePlayerEndMenu singlePlayerEndMenu;
+    private MultiPlayerEndMenu multiPlayerEndMenu;
     private PauseMenu pauseMenu;
 
     private int speed =3;
@@ -48,13 +49,14 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
     private ArrayList<Border> rightBorder;
     private ArrayList<Level> levels;
 
-    private int maxFloor;
     private boolean paused;
 
     public Game (Activity activity){
         super(activity);
         this.activity=activity;
         gameLayout=(RelativeLayout)activity.findViewById(R.id.single_player_layout);
+        singlePlayerEndMenu =new SinglePlayerEndMenu(this);
+        pauseMenu=new PauseMenu(this);
         isMultiPlayer=false;
         init();
     }
@@ -64,14 +66,13 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
         this.activity=activity;
         this.connection=connection;
         gameLayout=(RelativeLayout)activity.findViewById(R.id.multi_player_layout);
+        multiPlayerEndMenu = new MultiPlayerEndMenu(this);
         isMultiPlayer=true;
         init();
     }
 
     private void init(){
         gameLayout.addView(this);
-        endMenu=new EndMenu(this);
-        pauseMenu=new PauseMenu(this);
         sensorManager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
         getHolder().addCallback(this);
         setFocusable(true);
@@ -87,7 +88,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
         background =new Background(images[2]);
         if(isMultiPlayer){
             player=new Player(images[3], sensorManager, speed, images[1].getWidth(), connection);
-            ghostPlayer = new GhostPlayer(images[3]);
+            ghostPlayer = new GhostPlayer(images[3], images[1].getWidth());
             connection.start();
         }
         else
@@ -103,7 +104,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
             rightBorder.add(new Border(images[1], MainMenuActivity.displaySize.x - images[1].getWidth(), i * images[1].getHeight()));
         }
         paused=true;
-        maxFloor =0;
+        player.setMaxFloor(0);
         gameThread.setRunning(true);
         gameThread.start();
     }
@@ -136,13 +137,17 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
 
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            if(!paused && gameLayout.findViewById(R.id.end)==null){
-                gameLayout.addView(pauseMenu.getLayout(), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT));
-                paused=!paused;
-            }
-            if(gameLayout.findViewById(R.id.pause)==null)
-                paused=!paused;
+            if(!isMultiPlayer){
+                if(!paused && gameLayout.findViewById(R.id.end)==null){
+                    gameLayout.addView(pauseMenu.getLayout(), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT));
+                    paused=!paused;
+                }
+                if(gameLayout.findViewById(R.id.pause)==null)
+                    paused=!paused;
+            } else
+                if(!connection.getLastMessage().isValid)
+                    paused=!paused;
         }
         return super.onTouchEvent(event);
     }
@@ -157,8 +162,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
                 levels.get(i).update(player.getDy());
                 if (levelColission(player, levels.get(i))) {
                     player.setFloorJumpFrame(1);
-                    if (maxFloor < levels.get(i).getNumber()) {
-                        maxFloor = levels.get(i).getNumber();
+                    if (player.getMaxFloor() < levels.get(i).getNumber()) {
+                        player.setMaxFloor(levels.get(i).getNumber());
                     }
                 }
                 if (levels.get(i).getY() > MainMenuActivity.displaySize.y + 20) {
@@ -168,7 +173,6 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
                                 levels.get(levels.size() - 1).getY() - 53 - levels.get(levels.size() - 1).getHeight(),
                                 levels.get(levels.size() - 1).getNumber() + 1, images[1].getWidth()));
                     }
-
                 }
             }
 
@@ -189,14 +193,20 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
                             rightBorder.get(rightBorder.size() - 1).getY() - rightBorder.get(rightBorder.size() - 1).getHeight()));
                 }
             }
-            speed=maxFloor/100+3;
+            speed=player.getMaxFloor()/100+3;
             if(!keepPlaying()){
                 gameThread.setRunning(false);
-                if(isMultiPlayer)
+                if(isMultiPlayer){
+                    connection.write(new Message(false, 0, 0, player.getMaxFloor()));
                     connection.cancel();
+                }
                 showEndMenu();
             }
         }
+        else
+            if(isMultiPlayer && connection.getLastMessage().isValid &&
+                    connection.getLastMessage().start)
+                paused=!paused;
     }
 
     @Override
@@ -221,11 +231,23 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
     }
 
     private void showEndMenu(){
+        if(isMultiPlayer)
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    gameLayout.addView(multiPlayerEndMenu.getLayout(player.getMaxFloor(),
+                    connection.getLastMessage().start ,ghostPlayer.getMaxFloor()),
+                    new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT));
+                }
+            });
+        else
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                gameLayout.addView(endMenu.getLayout(maxFloor), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT));
+                gameLayout.addView(singlePlayerEndMenu.getLayout(player.getMaxFloor()),
+                new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
             }
         });
     }
@@ -243,7 +265,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
 
     private boolean keepPlaying(){
         if(player.getY()> MainMenuActivity.displaySize.y+player.getHeight()
-                || maxFloor == 1000){
+                || player.getMaxFloor() == 1000){
             return false;
         }
         else
