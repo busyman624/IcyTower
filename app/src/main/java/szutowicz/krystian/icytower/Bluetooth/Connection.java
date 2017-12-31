@@ -14,8 +14,6 @@ public class Connection extends Thread{
     private OutputStream outputStream;
     private Message lastMessage;
 
-    private boolean running;
-
     public Connection(BluetoothSocket bluetoothSocket){
         this.bluetoothSocket=bluetoothSocket;
 
@@ -38,7 +36,7 @@ public class Connection extends Thread{
         byte[] buffer = new byte[1024];
         int numBytes;
 
-        while(running){
+        while(true){
             try{
                 numBytes = inputStream.read(buffer);
                 lastMessage = new Message(new String(buffer, 0, numBytes));
@@ -55,7 +53,7 @@ public class Connection extends Thread{
         try{
             outputStream.write(buffer);
         }
-        catch (IOException e){
+        catch (IOException e){  //TODO disconnect after some time?
             Log.d("Connection", "Outputstream disconnected");
         }
     }
@@ -67,10 +65,6 @@ public class Connection extends Thread{
         catch (IOException closeException){
             Log.d("Client", "Cannot close socker");
         }
-    }
-
-    public void setRunning(boolean running){
-        this.running=running;
     }
 
     public Message getLastMessage(){

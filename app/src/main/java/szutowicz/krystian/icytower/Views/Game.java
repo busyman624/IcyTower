@@ -88,7 +88,6 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
         if(isMultiPlayer){
             player=new Player(images[3], sensorManager, speed, images[1].getWidth(), connection);
             ghostPlayer = new GhostPlayer(images[3]);
-            connection.setRunning(true);
             connection.start();
         }
         else
@@ -125,7 +124,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
             try{
                 gameThread.setRunning(false);
                 if(isMultiPlayer)
-                    connection.setRunning(false);
+                    connection.cancel();
                 gameThread.join();
                 retry = false;
             }
@@ -152,7 +151,7 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
         if(!paused) {
             player.update(speed);
             if(isMultiPlayer)
-                ghostPlayer.update(connection.getLastMessage());
+                ghostPlayer.update(connection.getLastMessage(), player.getY(), player.getTotalY());
             background.update(player.getDy());
             for (int i = 0; i < levels.size(); i++) {
                 levels.get(i).update(player.getDy());
@@ -193,7 +192,8 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
             speed=maxFloor/100+3;
             if(!keepPlaying()){
                 gameThread.setRunning(false);
-                connection.setRunning(false);
+                if(isMultiPlayer)
+                    connection.cancel();
                 showEndMenu();
             }
         }

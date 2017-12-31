@@ -15,16 +15,18 @@ public class GhostPlayer extends GameObject{
 
     public GhostPlayer(Bitmap image){
         this.image=image;
+        width=image.getWidth();
+        height=image.getHeight();
         x= MainMenuActivity.displaySize.x/2;
         y= MainMenuActivity.displaySize.y*3/4-height-5;
         paint = new Paint();
         paint.setAlpha(60);
     }
 
-    public void update(Message lastMessage){
+    public void update(Message lastMessage, int playerY, int playerTotalY){
         if(lastMessage!=null){
             x=lastMessage.x;
-            y=lastMessage.y;
+            y=playerY-playerTotalY+lastMessage.y;
         }
     }
 

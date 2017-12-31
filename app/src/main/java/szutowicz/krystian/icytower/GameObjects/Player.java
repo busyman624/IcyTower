@@ -18,6 +18,7 @@ public class Player extends GameObject {
     private int wallJumpFrame;
     private int floorJumpFrame;
     private int borderWidth;
+    private int totalY;
 
     public Player(Bitmap image, SensorManager sensorManager, int speed, int borderWidth){
         init(image, sensorManager, speed, borderWidth);
@@ -40,6 +41,7 @@ public class Player extends GameObject {
         dy=speed;
         wallJumpFrame =0;
         floorJumpFrame =0;
+        totalY=0;
         this.borderWidth=borderWidth;
     }
 
@@ -73,8 +75,10 @@ public class Player extends GameObject {
             dy=speed;
         }
 
-        if(connection!=null)
-            connection.write(new Message(true, x, y));
+        if(connection!=null){
+            totalY=totalY-oldY+y-dy;
+            connection.write(new Message(true, x, totalY));
+        }
     }
 
     public void draw(Canvas canvas){
@@ -131,4 +135,6 @@ public class Player extends GameObject {
     public int getFloorJumpFrame(){
         return floorJumpFrame;
     }
+
+    public int getTotalY() { return totalY; }
 }
