@@ -10,6 +10,7 @@ public class Message {
     public int maxFloor;
 
     Message(){
+        start=true;
         isValid=false;
     }
 

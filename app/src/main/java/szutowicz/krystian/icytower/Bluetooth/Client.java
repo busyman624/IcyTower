@@ -111,11 +111,13 @@ public class Client extends Thread{
     }
 
     public void addDevice(BluetoothDevice bluetoothDevice){
-        Button connectDevice = new Button(activity);
-        connectDevice.setText(bluetoothDevice.getName());
-        connectDevice.setOnClickListener(new ConnectButtonListener(bluetoothDevice));
-        discoveredDevicesLayout.addView(connectDevice, new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        if(bluetoothDevice.getName()!=null){
+            Button connectDevice = new Button(activity);
+            connectDevice.setText(bluetoothDevice.getName());
+            connectDevice.setOnClickListener(new ConnectButtonListener(bluetoothDevice));
+            discoveredDevicesLayout.addView(connectDevice, new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        }
     }
 
     private class SearchButtonListener implements View.OnClickListener{

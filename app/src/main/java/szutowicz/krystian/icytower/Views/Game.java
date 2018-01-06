@@ -198,7 +198,6 @@ public class Game extends SurfaceView implements SurfaceHolder.Callback{
                 gameThread.setRunning(false);
                 if(isMultiPlayer){
                     connection.write(new Message(false, 0, 0, player.getMaxFloor()));
-                    connection.cancel();
                 }
                 showEndMenu();
             }

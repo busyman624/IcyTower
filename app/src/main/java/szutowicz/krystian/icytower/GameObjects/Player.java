@@ -76,7 +76,7 @@ public class Player extends GameObject {
             dy=speed;
         }
 
-        if(connection!=null){
+        if(connection!=null && connection.getLastMessage().start!=false){
             float relativeX=(float)(x-borderWidth)/(MainMenuActivity.displaySize.x - 2 * borderWidth);
             totalY=totalY-oldY+y-dy;
             connection.write(new Message(true, relativeX, totalY, maxFloor));

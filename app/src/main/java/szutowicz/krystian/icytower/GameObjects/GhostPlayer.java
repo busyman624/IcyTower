@@ -29,7 +29,7 @@ public class GhostPlayer extends GameObject{
 
     public void update(Message lastMessage, int playerY, int playerTotalY){
         if(lastMessage.isValid){
-            x=(int)(borderWidth+MainMenuActivity.displaySize.x*lastMessage.x);
+            x=(int)(borderWidth+(MainMenuActivity.displaySize.x - 2* borderWidth)*lastMessage.x);
             y=playerY-playerTotalY+lastMessage.y;
             maxFloor=lastMessage.maxFloor;
         }

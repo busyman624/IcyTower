@@ -1,5 +1,6 @@
 package szutowicz.krystian.icytower;
 
+import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -8,7 +9,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -61,9 +65,16 @@ public class MultiPlayerActivity extends Activity {
                 client = new Client(MultiPlayerActivity.this, uuid);
             }
         });
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+        }
     }
 
-    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+    public final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if(BluetoothDevice.ACTION_FOUND.equals(intent.getAction())){
@@ -75,8 +86,23 @@ public class MultiPlayerActivity extends Activity {
 
     public void beginConnection(BluetoothSocket bluetoothSocket){
         game = new Game(this, new Connection(bluetoothSocket));
+        if(client!= null)
+            unregisterReceiver(broadcastReceiver);
         host = null ;
         client = null;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        if (requestCode==1) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_DENIED){
+                startActivity(new Intent(this, MainMenuActivity.class));
+                Toast.makeText(this, "Location is required, try again",
+                        Toast.LENGTH_LONG).show();
+                finish();
+            }
+        }
     }
 
     @Override

@@ -53,7 +53,7 @@ public class Connection extends Thread{
         try{
             outputStream.write(buffer);
         }
-        catch (IOException e){  //TODO disconnect after some time?
+        catch (IOException e){
             Log.d("Connection", "Outputstream disconnected");
         }
     }
